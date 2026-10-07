@@ -105,9 +105,9 @@ def summarize(records: Iterable[PacketRecord]) -> dict[str, Any]:
         conversations[endpoints] += record.length
         if record.destination_port is not None:
             destination_ports[record.source].add(record.destination_port)
-            service = service_for(record.destination_port)
-            if service:
-                services[service] += 1
+        service = service_for(record.destination_port) or service_for(record.source_port)
+        if service:
+            services[service] += 1
         if record.dns_query:
             dns_queries[record.dns_query] += 1
 

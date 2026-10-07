@@ -33,3 +33,12 @@ def test_port_scan_signal():
     ]
     findings = summarize(records)["findings"]
     assert any(item["type"] == "possible-port-scan" for item in findings)
+
+
+def test_service_detection_uses_source_port_for_responses():
+    response = PacketRecord(
+        1.0, "10.0.0.8", "10.0.0.2", "TCP", 23, 40000, 80
+    )
+    report = summarize([response])
+    assert report["services"] == {"telnet": 1}
+    assert any(item["type"] == "plaintext-service" for item in report["findings"])
